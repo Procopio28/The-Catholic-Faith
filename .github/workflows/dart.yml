@@ -8,14 +8,14 @@ jobs:
     name: iOS Build
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           architecture: x64
+
       - run: flutter pub get
-      
 
       - run: pod repo update
         working-directory: ios
@@ -32,11 +32,9 @@ jobs:
         run: zip -qq -r -9 The_Catholic_Faith.ipa Payload
         working-directory: build/ios/iphoneos
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v7
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/ios/iphoneos/The_Catholic_Faith.ipa
-          tag: v1.0
-          overwrite: true
-          body: "Version Ambot"
+          name: The_Catholic_Faith-ipa
+          path: build/ios/iphoneos/The_Catholic_Faith.ipa
+          if-no-files-found: error
