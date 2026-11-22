@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:the_catholic_faith/pages/navbar.dart';
 import 'package:the_catholic_faith/pages/onboarding_screen.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 void main() {
-  runApp(const Onboarding());
+  SharedPreferences.getInstance().then((prefs) {
+    final bool onboardingComplete = prefs.getBool('onboarding_complete') ?? false;
+    if (onboardingComplete) {
+      runApp(const Main());
+    } else {
+      runApp(const Onboarding());
+    }
+  });
 }
 
 class Onboarding extends StatelessWidget {
-  const new({super.key});
+  const Onboarding({super.key});
 
   @override
     Widget build(BuildContext context) {
@@ -18,7 +27,9 @@ class Onboarding extends StatelessWidget {
       home: Builder(
         builder: (context) => CupertinoOnboardingScreen(
           onComplete: () {
-            // Once finished, load your Navbar as the main app
+            SharedPreferences.getInstance().then((prefs) {
+              prefs.setBool('onboarding_complete', true);
+            });
             Navigator.of(context).pushReplacement(
               CupertinoPageRoute(builder: (_) => const Main()),
             );
