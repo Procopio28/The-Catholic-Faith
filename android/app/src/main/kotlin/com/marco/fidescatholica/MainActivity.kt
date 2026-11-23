@@ -1,4 +1,4 @@
-package com.example.the_catholic_faith
+package com.marco.fidescatholica
 
 import io.flutter.embedding.android.FlutterActivity
 
