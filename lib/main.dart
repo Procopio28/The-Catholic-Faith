@@ -7,11 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   SharedPreferences.getInstance().then((prefs) {
-    final bool onboardingComplete = prefs.getBool('onboarding_complete') ?? true;
+    final bool onboardingComplete = prefs.getBool('onboarding_complete') ?? false;
     if (onboardingComplete) {
-      runApp(const Onboarding());
-    } else {
       runApp(const Main());
+    }
+    else {
+      runApp(const Onboarding());
     }
   });
 }
