@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.getInstance().then((prefs) {
     final bool onboardingComplete = prefs.getBool('onboarding_complete') ?? false;
     if (onboardingComplete) {
@@ -42,7 +43,7 @@ class Onboarding extends StatelessWidget {
 }
 
 class Main extends StatelessWidget {
-  const new({super.key});
+  const Main({super.key});
 
   @override
     Widget build(BuildContext context) {
