@@ -39,7 +39,7 @@ class _BarState extends State<Bar> {
             label: 'Prayers',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.menu),
             label: 'Menu',
           ),
         ],

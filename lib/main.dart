@@ -4,19 +4,20 @@ import 'package:the_catholic_faith/pages/onboarding_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-void main() {
+String theme = '';
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SharedPreferences.getInstance().then((prefs) {
-    final bool onboardingComplete = prefs.getBool('onboarding_complete') ?? false;
-    if (onboardingComplete) {
-      runApp(const Main());
-    }
-    else {
-      runApp(const Onboarding());
-    }
-  });
+  final prefs = await SharedPreferences.getInstance();
+  theme = prefs.getString('theme') ?? 'System';
+
+  final bool onboardingComplete = prefs.getBool('onboarding_complete') ?? false;
+  runApp(onboardingComplete ? const Main() : const Onboarding());
 }
+
+// Future<void> readData() async {
+//   final prefs = await SharedPreferences.getInstance();
+//   theme = prefs.getString('theme') ?? 'System'; // Default to 'System' if no value is found
+// }
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -62,8 +63,11 @@ class Main extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      // Automatically switches based on device settings
-      themeMode: ThemeMode.system,
+      themeMode: switch (theme) {
+        'Light' => ThemeMode.light,
+        'Dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      },
       debugShowCheckedModeBanner: false,
       home: Bar()
     );

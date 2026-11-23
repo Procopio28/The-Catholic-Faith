@@ -15,7 +15,7 @@ Future<Map<String, dynamic>> loadAssetJson() async {
 var prayerName = "";
 
 class Prayers extends StatelessWidget {
-  const new({super.key});
+  const Prayers({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +186,9 @@ class Prayers extends StatelessWidget {
 }
 
 class ContentPage extends StatelessWidget {
+  const ContentPage({super.key});
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
