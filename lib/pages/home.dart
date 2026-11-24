@@ -11,11 +11,13 @@ class Home extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: 12.0),
         children: [
           ListTile(
-            tileColor: ColorScheme.fromSeed(seedColor: Colors.blue, brightness: Brightness.dark).primaryContainer,
-            shape: RoundedRectangleBorder(
+            tileColor: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+              brightness: Theme.of(context).brightness,
+            ).primaryContainer,            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
             title: Text('How to prove God - Based from St. Thomas Aquinas\' Five Ways'),

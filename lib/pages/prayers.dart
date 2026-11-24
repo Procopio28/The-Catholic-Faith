@@ -3,190 +3,145 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 Future<Map<String, dynamic>> loadAssetJson() async {
-  // 1. Load the JSON file as a string from assets
-  final String response = await rootBundle.loadString('assets/English.json');
-  
-  // 2. Decode the string into a Dart Map (or List)
-  final data = jsonDecode(response) as Map<String, dynamic>;
+  final String jsonString = await rootBundle.loadString('assets/English.json');
+  final Map<String, dynamic> data = jsonDecode(jsonString);
   
   return data;
+} 
+
+class Prayers extends StatefulWidget {
+  const Prayers({super.key});
+
+  @override
+  State<Prayers> createState() => _PrayersState();
 }
 
-var prayerName = "";
+class _PrayersState extends State<Prayers> {
+  final TextEditingController _searchController = TextEditingController();
+  late final Future<Map<String, dynamic>> _prayersFuture;
+  String _searchQuery = '';
 
-class Prayers extends StatelessWidget {
-  const Prayers({super.key});
+  @override
+  void initState() {
+    super.initState();
+    _prayersFuture = loadAssetJson();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Prayers'),
+        title: const Text('Prayers'),
         centerTitle: true,
       ),
-      body: ListView(
-        children: [
-          Text(
-            'Basic Prayers',
-            style: TextStyle(fontStyle: FontStyle.italic),
-            textAlign: TextAlign.center,
-          ),
-          ListTile(
-            title: Text('Sign of the Cross'),
-            onTap: () {
-              prayerName = "Sign of the Cross"; // Set the prayer name to the title of the tapped ListTile
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _prayersFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error loading prayers: ${snapshot.error}'));
+          }
+
+          final prayers = snapshot.data;
+          if (prayers == null || prayers.isEmpty) {
+            return const Center(child: Text('No prayers found'));
+          }
+
+          final prayerNames = prayers.keys.where((name) {
+            return name.toLowerCase().contains(_searchQuery.toLowerCase());
+          }).toList();
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search prayers',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchQuery.isEmpty
+                        ? null
+                        : IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {
+                                _searchQuery = '';
+                              });
+                            },
+                          ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
                 ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Our Father'),
-            onTap: () {
-              prayerName = "Our Father";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Hail Mary'),
-            onTap: () {
-              prayerName = "Hail Mary";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Glory Be'),
-            onTap: () {
-              prayerName = "Glory Be";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          Text(
-            'Creeds',
-            style: TextStyle(fontStyle: FontStyle.italic),
-            textAlign: TextAlign.center,
-          ),
-          ListTile(
-            title: Text('Apostles Creed'),
-            onTap: () {
-              prayerName = "Apostles Creed";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Nicene Creed'),
-            onTap: () {
-              prayerName = "Nicene Creed";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Athanasian Creed'),
-            onTap: () {
-              prayerName = "Athanasian Creed";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          Text(
-            'Mass',
-            style: TextStyle(fontStyle: FontStyle.italic),
-            textAlign: TextAlign.center,
-          ),
-          ListTile(
-            title: Text('Confiteor'),
-            onTap: () {
-              prayerName = "Confiteor";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Confiteor (Traditional)'),
-            onTap: () {
-              prayerName = "Confiteor (Traditional)";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Lord I am not worthy'),
-            onTap: () {
-              prayerName = "Lord I am not worthy";
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ContentPage(),
-                ),
-              );
-            },
-          ),
-          // Text(
-          //   'Litany',
-          //   style: TextStyle(fontStyle: FontStyle.italic),
-          //   textAlign: TextAlign.center,
-          // ),
-          // ListTile(
-          //   title: Text('Litany of the Blessed Virgin Mary'),
-          //   onTap: () {
-          //     // Handle tap for Prayer 2
-          //   },
-          // ),
-          // ListTile(
-          //   title: Text('Litany of the Holy Name of Jesus'),
-          //   onTap: () {
-          //     // Handle tap for Prayer 3
-          //   },
-          // ),
-          // Add more prayers as needed
-        ],
+              ),
+              Expanded(
+                child: prayerNames.isEmpty
+                    ? const Center(child: Text('No matching prayers found'))
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: prayerNames.length,
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(height: 12);
+                        },
+                        itemBuilder: (context, index) {
+                          final name = prayerNames[index];
+                          return ListTile(
+                            tileColor: ColorScheme.fromSeed(
+                              seedColor: Colors.blue,
+                              brightness: Theme.of(context).brightness,
+                            ).primaryContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            title: Text(name),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ContentPage(
+                                    prayerName: name,
+                                    prayerText: prayers[name].toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 }
 
 class ContentPage extends StatelessWidget {
-  const ContentPage({super.key});
+  const ContentPage({
+    super.key,
+    required this.prayerName,
+    required this.prayerText,
+  });
+
+  final String prayerName;
+  final String prayerText;
 
   @override
   Widget build(BuildContext context) {
@@ -195,33 +150,10 @@ class ContentPage extends StatelessWidget {
         title: Text(prayerName),
         centerTitle: true,
       ),
-      body: ListView(
-        children: [
-          FutureBuilder<Map<String, dynamic>>(
-          future: loadAssetJson(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Text('No data found');
-            } else {
-              final data = snapshot.data!;
-              final prayerText = data[prayerName] ?? 'Prayer not found';
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(prayerText),
-              );
-            }
-          },
-        )
-        ]
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(prayerText),
       ),
     );
   }
 }
-
-// loadAssetJson().then((data) {
-//                 print(data['Our Father']);
-//               });
