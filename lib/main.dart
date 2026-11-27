@@ -14,11 +14,6 @@ Future<void> main() async {
   runApp(onboardingComplete ? const Main() : const Onboarding());
 }
 
-// Future<void> readData() async {
-//   final prefs = await SharedPreferences.getInstance();
-//   theme = prefs.getString('theme') ?? 'System'; // Default to 'System' if no value is found
-// }
-
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
 
@@ -26,7 +21,6 @@ class Onboarding extends StatelessWidget {
     Widget build(BuildContext context) {
     return CupertinoApp(
       debugShowCheckedModeBanner: false,
-      // In main.dart
       home: Builder(
         builder: (context) => CupertinoOnboardingScreen(
           onComplete: () {
@@ -56,7 +50,6 @@ class Main extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      // Dark theme
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: seedColor,

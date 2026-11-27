@@ -62,7 +62,7 @@ class _PrayersState extends State<Prayers> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
                 child: TextField(
                   controller: _searchController,
                   onChanged: (value) {
@@ -87,6 +87,8 @@ class _PrayersState extends State<Prayers> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
+                    filled: true,
+                    fillColor: const Color.fromARGB(40, 255, 255, 255)
                   ),
                 ),
               ),

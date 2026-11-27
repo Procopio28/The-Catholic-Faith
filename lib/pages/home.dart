@@ -20,7 +20,7 @@ class Home extends StatelessWidget {
             ).primaryContainer,            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            title: Text('How to prove God - Based from St. Thomas Aquinas\' Five Ways'),
+            title: Text('How to prove God (St. Thomas Aquinas)'),
             onTap: () {
               Navigator.push(
                 context,
